@@ -1,17 +1,16 @@
 #!/bin/bash
-s
-set -e  # Exit on error
+set -e  # Exit on any error
 
-EC2_USER=ubuntu                    # Use ec2-user (Amazon Linux) or ubuntu (Ubuntu)
-EC2_HOST=your-ec2-public-ip        # Replace with your EC2 public IP
-KEY_PATH=$1                        # Passed in from Jenkins
+KEY_PATH=$1    # PEM file path
+EC2_USER=$2    # EC2 username
+EC2_HOST=$3    # EC2 host IP
 
-echo " Deploying to $EC2_HOST..."
+echo "Deploying to $EC2_USER@$EC2_HOST ..."
 
-# Upload files
-scp -i $KEY_PATH -o StrictHostKeyChecking=no index.php config.php $EC2_USER@$EC2_HOST:/var/www/html/
+# Upload files (adjust files as needed)
+scp -i "$KEY_PATH" -o StrictHostKeyChecking=no index.php config.php "$EC2_USER@$EC2_HOST:/var/www/html/"
 
-# Restart Apache
-ssh -i $KEY_PATH -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST "sudo systemctl restart apache2"
+# Restart Apache on EC2
+ssh -i "$KEY_PATH" -o StrictHostKeyChecking=no "$EC2_USER@$EC2_HOST" "sudo systemctl restart apache2"
 
 echo "✅ Deployment done!"
