@@ -12,9 +12,9 @@ pipeline {
             steps {
                 // Use Jenkins credentials to securely access the PEM file
                 withCredentials([sshUserPrivateKey(credentialsId: 'ec2-key', keyFileVariable: 'PEM_FILE', usernameVariable: 'EC2_USER')]) {
-                    // Make deploy.sh executable
+                    // Give deploy.sh permission to execute
                     sh 'chmod +x deploy.sh'
-                    // Run deploy.sh with the PEM file path argument
+                    // Run deploy.sh with the PEM file as an argument
                     sh "./deploy.sh $PEM_FILE"
                 }
             }
