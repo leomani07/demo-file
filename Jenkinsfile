@@ -3,9 +3,9 @@ pipeline {
 
     environment {
         // Path to your existing PEM file on the Jenkins machine
-        PEM_FILE = '/path/to/your/key.pem'  
+        PEM_FILE = '/home/jelly-server/SSH/Anisto.pem'  
         EC2_USER = 'ubuntu'               // Change if your EC2 user is different
-        EC2_HOST = 'your-ec2-public-ip'  // Replace with your EC2 instance public IP
+        EC2_HOST = '3.111.171.0'  // Replace with your EC2 instance public IP
     }
 
     stages {
