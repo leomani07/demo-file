@@ -1,0 +1,32 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Clone Repo') {
+            steps {
+                git 'https://github.com/<your-username>/<your-repo>.git'
+            }
+        }
+
+        stage('Deploy to EC2') {
+            steps {
+                // Use Jenkins credentials to securely access the PEM file
+                withCredentials([file(credentialsId: 'ec2-key', variable: 'PEM_FILE')]) {
+                    // Give deploy.sh permission to execute
+                    sh 'chmod +x deploy.sh'
+                    // Run deploy.sh with the PEM file as an argument
+                    sh "./deploy.sh $PEM_FILE"
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo " Deployment successful!"
+        }
+        failure {
+            echo " Deployment failed!"
+        }
+    }
+}
