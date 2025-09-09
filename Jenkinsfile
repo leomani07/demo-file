@@ -16,7 +16,7 @@ pipeline {
                     // Give deploy.sh permission to execute
                     sh 'chmod +x deploy.sh'
                     // Run deploy.sh with the PEM file as an argument
-                    sh "./deploy.sh $PEM_FILE"
+                    sh "./deploy.sh ****"
                 }
             }
         }
