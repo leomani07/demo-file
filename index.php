@@ -67,13 +67,16 @@ if (isset($_GET["logout"])) {
     <title>Login & Register</title>
     <style>
         body { font-family: Arial; background: #f4f4f4; padding: 50px; text-align: center; }
-        .container { background: #fff; padding: 20px; border-radius: 10px; width: 300px; margin: auto; box-shadow: 0 0 10px gray; }
+        .container { background: #fff; padding: 20px; border-radius: 10px; width: 350px; margin: auto; box-shadow: 0 0 10px gray; }
         input { width: 90%; padding: 8px; margin: 6px 0; border-radius: 4px; border: 1px solid gray; }
         .btn { background: blue; color: white; padding: 10px; border: none; width: 100%; cursor: pointer; }
         .btn:hover { background: darkblue; }
         .logout-btn { background: red; padding: 8px; color: white; border: none; cursor: pointer; }
         .error { color: red; }
         .success { color: green; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; }
+        th { background: #007BFF; color: white; }
     </style>
 </head>
 <body>
@@ -83,6 +86,22 @@ if (isset($_GET["logout"])) {
         <h1>Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?>!</h1>
         <p>You have successfully logged in.</p>
         <a href="index.php?logout=true" class="logout-btn">Logout</a>
+
+        <?php if ($_SESSION['username'] === 'admin'): ?>
+            <h2>👥 Registered Users</h2>
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                </tr>
+                <?php
+                $result = $conn->query("SELECT id, username FROM users");
+                while ($row = $result->fetch_assoc()) {
+                    echo "<tr><td>" . htmlspecialchars($row['id']) . "</td><td>" . htmlspecialchars($row['username']) . "</td></tr>";
+                }
+                ?>
+            </table>
+        <?php endif; ?>
     </div>
 <?php else: ?>
     <div class="container">
