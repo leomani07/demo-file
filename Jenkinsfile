@@ -1,37 +1,77 @@
 pipeline {
-    agent any
+    agent { label 'ubuntu' }  // ensures job runs on your EC2 agent
 
     environment {
-        // Path to your existing PEM file on the Jenkins machine
-        PEM_FILE = '/home/jelly-server/SSH/Anisto.pem'  
-        EC2_USER = 'ubuntu'               // Change if your EC2 user is different
-        EC2_HOST = '3.111.171.0'  // Replace with your EC2 instance public IP
+        APP_DIR = "/var/www/html"
+        RDS_ENDPOINT = "database-1.cliumscw44qs.ap-south-1.rds.amazonaws.com"
+        DB_USER = "admin"
+        DB_PASS = credentials('rds-password')   // stored in Jenkins credentials
+        DB_NAME = "LoginDB"
     }
 
     stages {
-        stage('Clone Repo') {
+        stage('Checkout Code') {
             steps {
-                git branch: 'main', url: 'https://github.com/1Z4t-R3p0/Seminar.git'
+                checkout scm
             }
         }
 
-        stage('Deploy to EC2') {
+        stage('Install Dependencies') {
             steps {
-                // Make deploy.sh executable
-                sh 'chmod +x deploy.sh'
+                sh '''
+                echo "📦 Installing Apache, PHP, and MySQL client..."
+                sudo apt update -y
+                sudo apt install -y apache2 php libapache2-mod-php php-mysql mysql-client
+                sudo systemctl enable apache2
+                sudo systemctl start apache2
+                '''
+            }
+        }
 
-                // Run deploy.sh with PEM_FILE, EC2_USER, and EC2_HOST as arguments
-                sh "./deploy.sh $PEM_FILE $EC2_USER $EC2_HOST"
+        stage('Deploy App') {
+            steps {
+                sh '''
+                echo "🚀 Deploying PHP app..."
+                sudo rm -rf ${APP_DIR}/*
+                sudo cp index.php config.php ${APP_DIR}/
+                sudo chown -R www-data:www-data ${APP_DIR}
+                '''
+            }
+        }
+
+        stage('Init Database') {
+            steps {
+                sh '''
+                echo "🛢️ Setting up database on RDS..."
+                mysql -h ${RDS_ENDPOINT} -u${DB_USER} -p${DB_PASS} <<EOF
+                CREATE DATABASE IF NOT EXISTS ${DB_NAME};
+                USE ${DB_NAME};
+                CREATE TABLE IF NOT EXISTS users (
+                  id INT AUTO_INCREMENT PRIMARY KEY,
+                  username VARCHAR(50) NOT NULL UNIQUE,
+                  password VARCHAR(255) NOT NULL
+                );
+EOF
+                '''
+            }
+        }
+
+        stage('Smoke Test') {
+            steps {
+                sh '''
+                echo "🌐 Running smoke test..."
+                curl -s http://localhost | grep "Login & Register"
+                '''
             }
         }
     }
 
     post {
         success {
-            echo "Deployment successful!"
+            echo "🎉 Deployment Successful!"
         }
         failure {
-            echo "Deployment failed!"
+            echo "❌ Deployment Failed! Check logs."
         }
     }
 }
