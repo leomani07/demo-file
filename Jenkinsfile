@@ -12,7 +12,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git branch: 'main', url: 'https://github.com/1Z4t-R3p0/Seminar.git'
+                checkout scm
             }
         }
 
