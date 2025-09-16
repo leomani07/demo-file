@@ -1,12 +1,12 @@
 pipeline {
-    agent { label 'ubuntu' }  // ensures job runs on your EC2 agent
+    agent { label 'testing' }  // ensures job runs on your EC2 agent
 
     environment {
         APP_DIR = "/var/www/html"
-        RDS_ENDPOINT = "db-aws-rds.cliumscw44qs.ap-south-1.rds.amazonaws.com"
-        DB_USER = "admin"
+        RDS_ENDPOINT = "server-database.cliumscw44qs.ap-south-1.rds.amazonaws.com"
+        DB_USER = "demo"
         DB_PASS = credentials('rds-password')   // stored in Jenkins credentials
-        DB_NAME = "LoginDB"
+        DB_NAME = "data-server"
     }
 
     stages {
