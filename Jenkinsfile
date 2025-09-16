@@ -3,8 +3,8 @@ pipeline {
 
     environment {
         APP_DIR = "/var/www/html"
-        RDS_ENDPOINT = "server-database.cliumscw44qs.ap-south-1.rds.amazonaws.com"
-        DB_USER = "demo"
+        RDS_ENDPOINT = "database-1.cliumscw44qs.ap-south-1.rds.amazonaws.com"
+        DB_USER = "admin"
         DB_PASS = "leomani123#"   // stored in Jenkins credentials
         DB_NAME = "LoginDB"
     }
