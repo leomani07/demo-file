@@ -6,7 +6,7 @@ pipeline {
         RDS_ENDPOINT = "server-database.cliumscw44qs.ap-south-1.rds.amazonaws.com"
         DB_USER = "demo"
         DB_PASS = "leomani123#"   // stored in Jenkins credentials
-        DB_NAME = "data-server"
+        DB_NAME = "LoginDB"
     }
 
     stages {
