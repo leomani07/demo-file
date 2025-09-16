@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'testing' }  // ensures job runs on your EC2 agent
+    agent { label 'ubuntu' }  // ensures job runs on your EC2 agent
 
     environment {
         APP_DIR = "/var/www/html"
