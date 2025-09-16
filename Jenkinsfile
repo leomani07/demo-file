@@ -5,7 +5,7 @@ pipeline {
         APP_DIR = "/var/www/html"
         RDS_ENDPOINT = "server-database.cliumscw44qs.ap-south-1.rds.amazonaws.com"
         DB_USER = "demo"
-        DB_PASS = credentials('rds-password')   // stored in Jenkins credentials
+        DB_PASS = "leomani123#"   // stored in Jenkins credentials
         DB_NAME = "data-server"
     }
 
